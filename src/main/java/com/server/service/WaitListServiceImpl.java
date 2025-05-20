@@ -41,8 +41,8 @@ public class WaitListServiceImpl implements WaitListService {
             return false;
         }
 
-        project.addEmail(email);
-        projectRepository.save(project);
+        WaitListEntry entry = new WaitListEntry(email, project);
+        waitListEntryRepository.save(entry);
         return true;
     }
 
