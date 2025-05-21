@@ -1,10 +1,6 @@
-package com.server.service;
+package com.server.utils;
 
-public record WaitListResponse(boolean success, String message) {
-
-}
-
-class WaitListResponseFactory {
+public class WaitListResponseFactory {
     public static WaitListResponse success() {
         return new WaitListResponse(true, null);
     }

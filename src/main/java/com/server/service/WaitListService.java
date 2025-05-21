@@ -2,6 +2,8 @@ package com.server.service;
 
 import com.server.domain.Project;
 import com.server.domain.WaitListEntry;
+import com.server.utils.WaitListRequest;
+import com.server.utils.WaitListResponse;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.server.controller;
 
-import com.server.service.WaitListRequest;
+import com.server.utils.WaitListRequest;
 import com.server.service.WaitListService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
