@@ -16,6 +16,7 @@ public class WaitListEntry {
     private String email;
 
     @ManyToOne
+    @JoinColumn(name = "project_id")
     @JsonBackReference
     private Project project;
 

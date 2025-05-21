@@ -1,4 +1,4 @@
 package com.server.service;
 
-public record WaitListRequest(String email, String projectId) {
+public record WaitListRequest(String email, String projectName) {
 }

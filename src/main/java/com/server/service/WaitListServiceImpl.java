@@ -4,8 +4,11 @@ import com.server.domain.Project;
 import com.server.domain.WaitListEntry;
 import com.server.repository.ProjectRepository;
 import com.server.repository.WaitListEntryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,7 @@ import java.util.Optional;
 @Service
 public class WaitListServiceImpl implements WaitListService {
 
+    private static final Logger log = LoggerFactory.getLogger(WaitListServiceImpl.class);
     private final WaitListEntryRepository waitListEntryRepository;
     private final ProjectRepository projectRepository;
 
@@ -24,12 +28,14 @@ public class WaitListServiceImpl implements WaitListService {
     }
 
     @Override
-    public boolean joinWaitList(WaitListRequest waitListRequest) {
-        String projectId = waitListRequest.projectId();
-        Optional<Project> projectOpt = projectRepository.findByProjectId(projectId);
+    @Transactional
+    public WaitListResponse joinWaitList(WaitListRequest waitListRequest) {
+        String projectName = waitListRequest.projectName();
+        Optional<Project> projectOpt = projectRepository.findByProjectName(projectName);
 
         if (projectOpt.isEmpty()) {
-            return false;
+            log.warn("Project not found: {}", projectName);
+            return WaitListResponseFactory.error("Project not found: " + projectName);
         }
 
         Project project = projectOpt.get();
@@ -38,22 +44,29 @@ public class WaitListServiceImpl implements WaitListService {
                 .anyMatch(entry -> entry.getEmail().equalsIgnoreCase(email));
 
         if (alreadyExists) {
-            return false;
+            return WaitListResponseFactory.alreadyExists();
         }
 
         WaitListEntry entry = new WaitListEntry(email, project);
         waitListEntryRepository.save(entry);
-        return true;
+        return WaitListResponseFactory.success();
     }
 
-
     @Override
+    @Transactional(readOnly = true)
     public Optional<List<WaitListEntry>> getProjectEmailList(String projectId) {
         if (projectId == null) {
             return Optional.empty();
         }
-        var project = projectRepository.findByProjectId(projectId);
+
+        var project = projectRepository.findByProjectName(projectId);
         return project.map(Project::getEmailList)
                 .map(ArrayList::new);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
     }
 }
