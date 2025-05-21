@@ -23,6 +23,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	implementation 'org.xerial:sqlite-jdbc:3.45.1.0'
 	implementation 'org.hibernate.orm:hibernate-community-dialects:6.4.4.Final'
 

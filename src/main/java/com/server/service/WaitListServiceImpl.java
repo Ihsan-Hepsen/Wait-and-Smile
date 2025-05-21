@@ -23,11 +23,14 @@ public class WaitListServiceImpl implements WaitListService {
     private static final Logger log = LoggerFactory.getLogger(WaitListServiceImpl.class);
     private final WaitListEntryRepository waitListEntryRepository;
     private final ProjectRepository projectRepository;
+    private final AutoReplyEmailService emailService;
 
     @Autowired
-    public WaitListServiceImpl(WaitListEntryRepository waitListEntryRepository, ProjectRepository projectRepository) {
+    public WaitListServiceImpl(WaitListEntryRepository waitListEntryRepository, ProjectRepository projectRepository,
+                               AutoReplyEmailService emailService) {
         this.waitListEntryRepository = waitListEntryRepository;
         this.projectRepository = projectRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class WaitListServiceImpl implements WaitListService {
 
         WaitListEntry entry = new WaitListEntry(email, project);
         waitListEntryRepository.save(entry);
+        emailService.sendWelcomeEmail(email);
         return WaitListResponseFactory.success();
     }
 
