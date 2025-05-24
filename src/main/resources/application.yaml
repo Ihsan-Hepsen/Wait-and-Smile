@@ -17,6 +17,18 @@ spring:
       hibernate:
         format_sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-secret:
+            client-id:
+            scope:
+              - openid
+              - profile
+              - email
+
   mail:
     host: smtp.gmail.com
     port: 587

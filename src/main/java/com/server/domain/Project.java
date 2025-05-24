@@ -16,6 +16,10 @@ public class Project {
     @Column(name = "project_name", unique = true)
     private String projectName;
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User owner;
+
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<WaitListEntry> emailList = new ArrayList<>();

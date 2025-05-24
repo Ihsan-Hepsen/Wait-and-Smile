@@ -4,18 +4,19 @@ package com.server.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -25,19 +26,23 @@ public class SecurityConfig {
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(Customizer.withDefaults())
+                .cors(withDefaults())
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**", "/api/waitlist/**")
+                        .ignoringRequestMatchers("/home/**", "/waitlist/**", "/api/waitlist/**")
                 )
                 .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny
+                        )
+                        .addHeaderWriter(new XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
                 )
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/home", "/h2-console/**").permitAll();
+                    auth.requestMatchers("/", "/home", "/home/**").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/waitlist").permitAll();
-                    auth.requestMatchers(HttpMethod.GET, "/api/waitlist/*").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/waitlist", "/waitlist/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/waitlist", "/api/waitlist/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
+                .oauth2Login(withDefaults())
                 .build();
     }
 
