@@ -22,8 +22,7 @@ spring:
       client:
         registration:
           google:
-            client-secret:
-            client-id:
+
             scope:
               - openid
               - profile

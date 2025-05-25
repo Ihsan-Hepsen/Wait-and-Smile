@@ -1,9 +1,11 @@
-package com.server.service;
+package com.server.service.impl;
 
 import com.server.domain.Project;
 import com.server.domain.WaitListEntry;
 import com.server.repository.ProjectRepository;
 import com.server.repository.WaitListEntryRepository;
+import com.server.service.AutoReplyEmailService;
+import com.server.service.WaitListService;
 import com.server.utils.WaitListRequest;
 import com.server.utils.WaitListResponse;
 import com.server.utils.WaitListResponseFactory;

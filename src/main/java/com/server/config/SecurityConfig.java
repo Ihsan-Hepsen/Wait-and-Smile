@@ -1,6 +1,6 @@
 package com.server.config;
 
-
+import com.server.utils.OAuth2LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,6 +23,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final OAuth2LoginSuccessHandler successHandler;
+
+    public SecurityConfig(OAuth2LoginSuccessHandler successHandler) {
+        this.successHandler = successHandler;
+    }
+
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -42,7 +48,9 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.GET, "/api/waitlist", "/api/waitlist/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
-                .oauth2Login(withDefaults())
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler)
+                )
                 .build();
     }
 
