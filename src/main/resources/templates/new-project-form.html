@@ -2,10 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Waitlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Welcome to Wait & Smile</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,7 +14,11 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #fcfcfc;
+            background-color: #f8f8f8;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .waitlist-paper {
@@ -29,8 +30,8 @@
             justify-content: center;
             align-items: center;
             font-family: 'Inter', sans-serif;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
             max-width: 500px;
             margin: 0 auto;
         }
@@ -205,108 +206,23 @@
 <body>
 <div class="waitlist-paper">
     <div class="main-container">
+
         <section class="header-section">
-            <h3 class="title">Join our waitlist</h3>
-            <p class="subtitle">No spam, just updates. Limited spots.</p>
+            <h3 class="title">Give it a name</h3>
+            <p class="subtitle">Enter your project or product name for the waitlist</p>
         </section>
 
-        <!-- Success/Error Alert -->
-        <div id="alert-section" class="hidden">
-            <div id="alert" class="alert">
-                <span class="material-icons" id="alert-icon"></span>
-                <span id="alert-message"></span>
-            </div>
-        </div>
-
-        <!-- Form -->
-        <form id="waitlist-form" class="form-container" th:action="@{/api/waitlist}" method="post">
+        <form id="project-name-form" class="form-container" th:action="@{/projects}" method="post">
             <div class="text-field">
-                <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder=" "
-                        required
-                        th:value="${email}"
-                />
-                <label for="email" class="field-label">Enter your email</label>
+                <input type="text" id="name" name="name" placeholder=" " required/>
+                <label for="name" class="field-label">awesome project*</label>
             </div>
             <button type="submit" class="submit-button" id="submit-btn">
-                <span class="material-icons" id="submit-icon">arrow_forward</span>
+                <span>Done</span>
                 <div class="loading-spinner hidden" id="loading-spinner"></div>
             </button>
         </form>
     </div>
 </div>
-
-<script>
-    document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const form = this;
-        const submitBtn = document.getElementById('submit-btn');
-        const submitIcon = document.getElementById('submit-icon');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const alertSection = document.getElementById('alert-section');
-        const alert = document.getElementById('alert');
-        const alertIcon = document.getElementById('alert-icon');
-        const alertMessage = document.getElementById('alert-message');
-        const emailInput = document.getElementById('email');
-
-        // Show loading state
-        submitBtn.disabled = true;
-        submitIcon.classList.add('hidden');
-        loadingSpinner.classList.remove('hidden');
-
-        try {
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            const result = await response.json();
-
-            // Hide form and show result
-            form.classList.add('hidden');
-            alertSection.classList.remove('hidden');
-
-            switch(result.status) {
-                case 'new':
-                    alert.className = 'alert alert-success';
-                    alertIcon.textContent = 'check';
-                    alertMessage.textContent = "You're in!";
-                    break;
-                case 'exists':
-                    alert.className = 'alert alert-success';
-                    alertIcon.textContent = 'check';
-                    alertMessage.textContent = "You're already in!";
-                    break;
-                case 'error':
-                default:
-                    alert.className = 'alert alert-error';
-                    alertIcon.textContent = 'close';
-                    alertMessage.textContent = "Something went wrong. Try again later";
-                    break;
-            }
-
-        } catch (error) {
-            // Hide form and show error
-            form.classList.add('hidden');
-            alertSection.classList.remove('hidden');
-            alert.className = 'alert alert-error';
-            alertIcon.textContent = 'close';
-            alertMessage.textContent = "Something went wrong. Try again later";
-        }
-
-        // Reset button state (in case we want to show form again)
-        submitBtn.disabled = false;
-        submitIcon.classList.remove('hidden');
-        loadingSpinner.classList.add('hidden');
-    });
-</script>
 </body>
 </html>

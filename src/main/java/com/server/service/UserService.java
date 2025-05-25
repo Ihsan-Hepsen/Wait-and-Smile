@@ -9,7 +9,9 @@ public interface UserService {
 
     void newUser(User user);
     Optional<User> getUserById(String userId);
+    Optional<User> getUserByEmail(String email);
     List<User> getAllUsers();
+    void updateUser(User user);
     void deleteUser(String userId);
 
 }

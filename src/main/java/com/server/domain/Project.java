@@ -45,8 +45,20 @@ public class Project {
         return projectName;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public void setEmailList(List<WaitListEntry> emailList) {
@@ -72,7 +84,8 @@ public class Project {
         return "Project{" +
                 "id=" + id +
                 ", projectName='" + projectName + '\'' +
-                ", emailListSize=" + (emailList != null ? emailList.size() : 0) +
+                ", owner=" + owner +
+                ", emailList=" + emailList +
                 '}';
     }
 }

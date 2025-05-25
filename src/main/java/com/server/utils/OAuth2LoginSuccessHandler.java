@@ -27,12 +27,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
 
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
         OAuth2User user = oauthToken.getPrincipal();
 
-        String id = (String) user.getAttribute("sub");
+        String id = user.getAttribute("sub");
         String email = user.getAttribute("email");
         String name = user.getAttribute("name");
 
@@ -42,9 +42,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             newUser.setEmail(email);
             newUser.setName(name);
             userRepository.save(newUser);
+
+            response.sendRedirect("/projects/new");
+            return;
         }
 
-        response.sendRedirect("/");
+        response.sendRedirect("/dashboard");
     }
 }
 

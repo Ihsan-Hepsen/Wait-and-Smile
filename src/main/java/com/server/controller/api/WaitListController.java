@@ -39,7 +39,7 @@ public class WaitListController {
         log.info("Email: {}", email);
 
         // Create WaitListRequest from form parameter
-        WaitListRequest waitListRequest = new WaitListRequest(email, "test"); // or get projectName from form
+        WaitListRequest waitListRequest = new WaitListRequest(email, "Vibio"); // or get projectName from form
         var serviceResponse = waitListService.joinWaitList(waitListRequest);
 
         if (!serviceResponse.success()) {

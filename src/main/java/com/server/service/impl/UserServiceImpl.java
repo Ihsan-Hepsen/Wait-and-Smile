@@ -40,9 +40,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> getUserByEmail(String email) {
+        log.info("Finding user with email: {}", email);
+        return Optional.of(userRepository.findUserByEmail(email));
+    }
+
+    @Override
     public List<User> getAllUsers() {
         log.info("Getting all users");
         return userRepository.findAll();
+    }
+
+    @Override
+    public void updateUser(User user) {
+        log.info("Updating user");
+        var updatedUser = userRepository.findById(user.getId());
+        updatedUser.ifPresent(userRepository::save);
     }
 
     @Override

@@ -22,7 +22,8 @@ spring:
       client:
         registration:
           google:
-
+            client-secret:
+            client-id:
             scope:
               - openid
               - profile
@@ -32,7 +33,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: info@vibio.co
-    password:
+
     properties:
       mail:
         smtp:
