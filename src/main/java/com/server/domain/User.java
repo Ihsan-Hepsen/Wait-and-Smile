@@ -65,7 +65,7 @@ public class User {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", projectId=" + project.getId() +
+                ", projectId=" + (project != null ? project.getId() : "NO ASSOCIATED PROJECT") +
                 '}';
     }
 }

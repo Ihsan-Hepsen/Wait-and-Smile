@@ -1,5 +1,6 @@
 package com.server.controller.presentation;
 
+import com.server.domain.Project;
 import com.server.domain.User;
 import com.server.service.ProjectService;
 import com.server.service.UserService;
@@ -52,12 +53,14 @@ public class DashboardController {
             model.addAttribute("name", user.getName());
 
             if (user.getProject() != null) {
-                model.addAttribute("projectName", user.getProject().getProjectName());
-                model.addAttribute("emailList", user.getProject().getEmailList());
+                Project project = user.getProject();
+                model.addAttribute("projectName", project.getProjectName());
+                model.addAttribute("emailList", project.getEmailList());
                 model.addAttribute("hasProject", true);
             } else {
                 model.addAttribute("hasProject", false);
                 log.info("User {} has no associated project", userId);
+                return "redirect:/projects/new";
             }
 
             model.addAttribute("userEmail", user.getEmail());

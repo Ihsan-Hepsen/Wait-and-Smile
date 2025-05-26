@@ -1,22 +1,114 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Wait & Smile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - [[${projectName}]]</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
-<h2>Dashboard</h2>
-<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+<div class="container">
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="dashboard-header">
+            <h1 class="project-title" th:text="${projectName}">Project Name</h1>
+            <div class="waitlist-count">
+                <i class="bi bi-people-fill"></i>
+                <span class="count-number" th:text="${#lists.size(emailList)}">0</span>
+                <span class="count-label">people in waitlist</span>
+            </div>
+        </div>
 
-<div th:if="${hasProject}">
-    <h2 th:text="${projectName}">Project Name</h2>
-    <ul>
-        <li th:each="email : ${emailList}" th:text="${email}">Email</li>
-    </ul>
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- No Project Message -->
+        <div th:if="${!hasProject}" class="alert alert-info text-center">
+            <i class="bi bi-info-circle-fill me-2"></i>
+            No project assigned yet.
+        </div>
+
+        <!-- Main Content -->
+        <div th:if="${hasProject and #lists.size(emailList) > 0}" class="main-content">
+            <!-- Export Button -->
+            <div class="export-section">
+                <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                    <i class="bi bi-download me-2"></i>
+                    Export to CSV
+                </button>
+            </div>
+
+            <!-- Waitlist Table -->
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead class="table-header">
+                    <tr>
+                        <th scope="col">Order #</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Join Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry, iterStat : ${emailList}">
+                        <td class="order-number" th:text="${iterStat.count}">1</td>
+                        <td class="email-cell" th:text="${entry.email}">user@example.com</td>
+                        <td class="date-cell" th:text="${#temporals.format(entry.joinedAt, 'MMM dd, yyyy')}">
+                            Jan 1, 2024
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${hasProject and #lists.size(emailList) == 0}" class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h3>No signups yet</h3>
+            <p class="text-muted">Your waitlist is empty. Share your project to start collecting signups!</p>
+        </div>
+    </div>
 </div>
 
-<div th:if="${!hasProject}">
-    <p>No project assigned yet.</p>
-</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Custom JavaScript -->
+<script>
+    function exportToCSV() {
+        // Get table data
+        const table = document.querySelector('.table');
+        const rows = Array.from(table.querySelectorAll('tr'));
+
+        // Convert table to CSV
+        const csv = rows.map(row => {
+            const cells = Array.from(row.querySelectorAll('th, td'));
+            return cells.map(cell => `"${cell.textContent.trim()}"`).join(',');
+        }).join('\n');
+
+        // Create and download CSV file
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `[[${projectName}]]-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }
+</script>
 </body>
 </html>

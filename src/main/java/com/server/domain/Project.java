@@ -84,7 +84,7 @@ public class Project {
         return "Project{" +
                 "id=" + id +
                 ", projectName='" + projectName + '\'' +
-                ", owner=" + owner +
+                ", owner=" + owner.getId() +
                 ", emailList=" + emailList +
                 '}';
     }
