@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Wait & Smile</title>
+</head>
+<body>
+<h2>Dashboard</h2>
+<div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+<div th:if="${hasProject}">
+    <h2 th:text="${projectName}">Project Name</h2>
+    <ul>
+        <li th:each="email : ${emailList}" th:text="${email}">Email</li>
+    </ul>
+</div>
+
+<div th:if="${!hasProject}">
+    <p>No project assigned yet.</p>
+</div>
+</body>
+</html>
