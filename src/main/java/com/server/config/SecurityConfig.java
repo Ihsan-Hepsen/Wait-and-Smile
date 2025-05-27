@@ -46,6 +46,7 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.POST, "/api/waitlist").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/waitlist", "/waitlist/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/waitlist", "/api/waitlist/**").permitAll();
+                    auth.requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
