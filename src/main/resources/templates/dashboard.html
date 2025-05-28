@@ -41,10 +41,14 @@
         </div>
 
         <!-- Main Content -->
-        <div th:if="${hasProject and #lists.size(emailList) > 0}" class="main-content">
-            <!-- Export Button -->
+        <div th:if="${hasProject}" class="main-content">
             <div class="export-section">
-                <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                <input type="hidden" id="project-name" th:value="${projectName}" />
+                <button type="button" class="btn btn-primary" onclick="copyWaitlistEmbed()">
+                    <i class="bi bi-code me-2"></i>
+                    Copy  Waitlist Embed
+                </button>
+                <button type="button" class="btn btn-outline-dark" onclick="exportToCSV()">
                     <i class="bi bi-download me-2"></i>
                     Export to CSV
                 </button>
@@ -108,6 +112,19 @@
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
+    }
+
+    async function copyWaitlistEmbed() {
+        const projectName = document.getElementById('project-name').value
+        const embedCode = `<iframe src="http://localhost:8080/waitlist?projectName=${projectName}" width="100%" height="300" style="border:none;"></iframe>`
+
+        try {
+            await navigator.clipboard.writeText(embedCode);
+            alert('Embed code copied to clipboard! ✅');
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            alert('Failed to copy. Please try again later. ❌');
+        }
     }
 </script>
 </body>

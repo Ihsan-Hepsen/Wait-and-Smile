@@ -32,8 +32,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#comparison">Why Us</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-primary ms-2 px-3" th:href="@{/login}">Get Started</a>
+                <li th:if="${!authOK}" class="nav-item">
+                    <a class="nav-link btn btn-primary ms-2 px-3" th:href="@{/login}">Login</a>
+                </li>
+                <li th:if="${authOK}" class="nav-item">
+                    <a class="nav-link btn btn-primary ms-2 px-3" th:href="@{/dashboard}">Go to Dashboard</a>
                 </li>
             </ul>
         </div>
@@ -51,11 +54,11 @@
             </p>
 
             <div class="hero-actions">
-                <a href="#" class="btn btn-primary btn-lg" th:href="@{/register}">
+                <a href="#" class="btn btn-primary btn-lg" th:href="@{/login}">
                     <i class="bi bi-rocket-takeoff me-2"></i>
                     Start Building Your Waitlist
                 </a>
-                <a href="#features" class="btn btn-outline-secondary btn-lg">
+                <a href="#comparison" class="btn btn-outline-secondary btn-lg">
                     Learn More
                 </a>
             </div>
@@ -86,7 +89,7 @@
                                 <p class="text-muted medium mb-0">Thanks for joining us</p>
                             </div>
                         </div>
-                        <p class="text-secondary medium mb-0">
+                        <p class="text-start text-secondary medium mb-0" style="padding: 0 .2rem">
                             "Hi there! 👋 We're thrilled you joined our waitlist. You're #36 in line.
                             We'll keep you updated every step of the way!"
                         </p>
@@ -182,7 +185,7 @@
                 Join and start building better relationships
                 with your audience through engaging waitlists.
             </p>
-            <a href="#" class="btn btn-primary btn-lg" th:href="@{/register}">
+            <a href="#" class="btn btn-primary btn-lg" th:href="@{/login}">
                 <i class="bi bi-rocket-takeoff me-2"></i>
                 Get Started Free
             </a>

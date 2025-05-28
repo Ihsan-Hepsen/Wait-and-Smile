@@ -25,27 +25,27 @@ public class WaitListController {
         this.waitListService = waitListService;
     }
 
-    @PostMapping()
+    @PostMapping
     @ResponseBody
-    public ResponseEntity<Map<String, String>> joinWaitList(@RequestParam String email) {
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<Map<String, String>> joinWaitList(@RequestBody WaitListRequest request) {
+        String email = request.email();
+        String projectName = request.projectName();
 
-        if (email == null || email.trim().isEmpty()) {
+        Map<String, String> response = new HashMap<>();
+        if (email.isBlank() || projectName.isBlank()) {
             response.put("status", "error");
-            response.put("message", "Email is required");
+            response.put("message", "Both email and project name are required");
             return ResponseEntity.badRequest().body(response);
         }
-
         log.info("Email: {}", email);
 
-        // Create WaitListRequest from form parameter
-        WaitListRequest waitListRequest = new WaitListRequest(email, "Vibio"); // or get projectName from form
+        WaitListRequest waitListRequest = new WaitListRequest(email, projectName);
         var serviceResponse = waitListService.joinWaitList(waitListRequest);
 
         if (!serviceResponse.success()) {
             response.put("status", "error");
             response.put("message", serviceResponse.message());
-            return ResponseEntity.ok(response); // Return 200 with error status for frontend to handle
+            return ResponseEntity.ok(response);
         }
 
         if (serviceResponse.message() == null) {

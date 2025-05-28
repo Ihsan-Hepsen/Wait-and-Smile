@@ -15,12 +15,12 @@ public class AutoReplyEmailServiceImpl implements AutoReplyEmailService {
     @Override
     public void sendWelcomeEmail(String receiverEmail) {
         String body = """
-                Hi there,
+                Hi there! 👋
                 
-                Thank you for joining! We'll keep you updated with product updates and you'll be the first to learn when we launch it!
+                We're thrilled you joined our waitlist. You're #36 in line. We'll keep you updated every step of the way!
                 
-                Best wishes,
-                The Team
+                Cheers,
+                EPPIC Inc.
                 """;
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(receiverEmail);

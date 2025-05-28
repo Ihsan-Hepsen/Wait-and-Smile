@@ -76,6 +76,9 @@ body {
     padding: 0 0 1.5rem 0;
     border-bottom: 1px solid #e9ecef;
     text-align: right;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .btn-success {

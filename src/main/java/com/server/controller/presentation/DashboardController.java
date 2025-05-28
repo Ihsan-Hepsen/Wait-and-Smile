@@ -30,7 +30,6 @@ public class DashboardController {
     @GetMapping
     public String dashboard(Model model, RedirectAttributes redirectAttributes) {
         try {
-            // current authenticated user
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication == null || !authentication.isAuthenticated() ||

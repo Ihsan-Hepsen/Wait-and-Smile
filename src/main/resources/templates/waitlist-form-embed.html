@@ -229,6 +229,7 @@
                         required
                         th:value="${email}"
                 />
+                <input type="hidden" id="project-name" th:value="${projectName}" />
                 <label for="email" class="field-label">Enter your email</label>
             </div>
             <button type="submit" class="submit-button" id="submit-btn">
@@ -252,6 +253,7 @@
         const alertIcon = document.getElementById('alert-icon');
         const alertMessage = document.getElementById('alert-message');
         const emailInput = document.getElementById('email');
+        const projectInput = document.getElementById('project-name');
 
         // Show loading state
         submitBtn.disabled = true;
@@ -259,13 +261,18 @@
         loadingSpinner.classList.remove('hidden');
 
         try {
-            const formData = new FormData(form);
+            const payload = {
+                email: emailInput.value,
+                projectName: projectInput.value
+            };
+
             const response = await fetch(form.action, {
                 method: 'POST',
-                body: formData,
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
-                }
+                },
+                body: JSON.stringify(payload)
             });
 
             const result = await response.json();
@@ -302,7 +309,6 @@
             alertMessage.textContent = "Something went wrong. Try again later";
         }
 
-        // Reset button state (in case we want to show form again)
         submitBtn.disabled = false;
         submitIcon.classList.remove('hidden');
         loadingSpinner.classList.add('hidden');
