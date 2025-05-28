@@ -23,6 +23,7 @@ public class HomePageController {
                 !"anonymousUser".equals(authentication.getPrincipal());
 
         model.addAttribute("authOK", isAuthenticated);
+        log.info("GET Home page");
         return "index";
     }
 }

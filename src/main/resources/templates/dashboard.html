@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +7,10 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-
+    <!-- Custom JS -->
+    <script defer th:src="@{/js/dashboard.js}"></script>
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
@@ -44,11 +44,11 @@
         <div th:if="${hasProject}" class="main-content">
             <div class="export-section">
                 <input type="hidden" id="project-name" th:value="${projectName}" />
-                <button type="button" class="btn btn-primary" onclick="copyWaitlistEmbed()">
+                <button type="button" class="btn btn-primary" id="copy-embed-btn">
                     <i class="bi bi-code me-2"></i>
                     Copy  Waitlist Embed
                 </button>
-                <button type="button" class="btn btn-outline-dark" onclick="exportToCSV()">
+                <button type="button" class="btn btn-outline-dark" id="download-csv-btn">
                     <i class="bi bi-download me-2"></i>
                     Export to CSV
                 </button>
@@ -85,47 +85,6 @@
         </div>
     </div>
 </div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Custom JavaScript -->
-<script>
-    function exportToCSV() {
-        // Get table data
-        const table = document.querySelector('.table');
-        const rows = Array.from(table.querySelectorAll('tr'));
-
-        // Convert table to CSV
-        const csv = rows.map(row => {
-            const cells = Array.from(row.querySelectorAll('th, td'));
-            return cells.map(cell => `"${cell.textContent.trim()}"`).join(',');
-        }).join('\n');
-
-        // Create and download CSV file
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `[[${projectName}]]-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }
-
-    async function copyWaitlistEmbed() {
-        const projectName = document.getElementById('project-name').value
-        const embedCode = `<iframe src="http://localhost:8080/waitlist?projectName=${projectName}" width="100%" height="300" style="border:none;"></iframe>`
-
-        try {
-            await navigator.clipboard.writeText(embedCode);
-            alert('Embed code copied to clipboard! ✅');
-        } catch (err) {
-            console.error('Failed to copy:', err);
-            alert('Failed to copy. Please try again later. ❌');
-        }
-    }
-</script>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
