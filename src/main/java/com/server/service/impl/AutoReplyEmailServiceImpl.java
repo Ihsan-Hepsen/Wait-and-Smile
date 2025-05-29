@@ -1,5 +1,6 @@
 package com.server.service.impl;
 
+import com.server.domain.Project;
 import com.server.service.AutoReplyEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,15 +14,15 @@ public class AutoReplyEmailServiceImpl implements AutoReplyEmailService {
     private JavaMailSender mailSender;
 
     @Override
-    public void sendWelcomeEmail(String receiverEmail) {
-        String body = """
+    public void sendWelcomeEmail(String project, int count, String receiverEmail) {
+        String body = String.format("""
                 Hi there! 👋
                 
-                We're thrilled you joined our waitlist. You're #36 in line. We'll keep you updated every step of the way!
+                Thank you for joining %s waitlist. You're #%d in line. We'll keep you updated every step of the way!
                 
                 Cheers,
-                EPPIC Inc.
-                """;
+                %s
+                """, project, count, project);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(receiverEmail);
         message.setSubject("Thank you! We'll let you know.");

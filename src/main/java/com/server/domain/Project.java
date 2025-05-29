@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "projects")
 public class Project {
 
     @Id
@@ -30,7 +31,7 @@ public class Project {
 
     public Project(String projectName, List<WaitListEntry> emailList) {
         this.projectName = projectName;
-        this.emailList = emailList;
+        this.emailList = emailList != null ? emailList : new ArrayList<>();
     }
 
     public Long getId() {
@@ -62,21 +63,44 @@ public class Project {
     }
 
     public void setEmailList(List<WaitListEntry> emailList) {
-        this.emailList = emailList;
+        this.emailList = emailList != null ? emailList : new ArrayList<>();
     }
 
-    public void newEmailEntry(String email) {
+    public boolean addWaitListEntry(String email) {
         boolean exists = emailList.stream()
                 .anyMatch(e -> e.getEmail().equalsIgnoreCase(email));
-        if (!exists) {
-            WaitListEntry entry = new WaitListEntry(email, this);
-            emailList.add(entry);
+
+        if (exists) {
+            return false; // email already exists
         }
+
+        WaitListEntry entry = new WaitListEntry();
+        entry.setEmail(email);
+
+        addWaitListEntry(entry);
+        return true;
     }
 
     public void addWaitListEntry(WaitListEntry entry) {
+        if (entry == null) {
+            return;
+        }
         emailList.add(entry);
+        // set parent reference
         entry.setProject(this);
+    }
+
+    public void removeWaitListEntry(WaitListEntry entry) {
+        if (entry == null) {
+            return;
+        }
+        emailList.remove(entry);
+        // clear parent reference
+        entry.setProject(null);
+    }
+
+    public int getWaitlistSize() {
+        return emailList.size();
     }
 
     @Override
@@ -84,8 +108,8 @@ public class Project {
         return "Project{" +
                 "id=" + id +
                 ", projectName='" + projectName + '\'' +
-                ", owner=" + owner.getId() +
-                ", emailList=" + emailList +
+                ", owner=" + (owner != null ? owner.getId() : "null") +
+                ", waitlistSize=" + getWaitlistSize() +
                 '}';
     }
 }

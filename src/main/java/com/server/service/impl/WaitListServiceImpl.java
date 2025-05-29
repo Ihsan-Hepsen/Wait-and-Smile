@@ -28,8 +28,7 @@ public class WaitListServiceImpl implements WaitListService {
     private final AutoReplyEmailService emailService;
 
     @Autowired
-    public WaitListServiceImpl(WaitListEntryRepository waitListEntryRepository, ProjectRepository projectRepository,
-                               AutoReplyEmailService emailService) {
+    public WaitListServiceImpl(WaitListEntryRepository waitListEntryRepository, ProjectRepository projectRepository, AutoReplyEmailService emailService) {
         this.waitListEntryRepository = waitListEntryRepository;
         this.projectRepository = projectRepository;
         this.emailService = emailService;
@@ -48,16 +47,18 @@ public class WaitListServiceImpl implements WaitListService {
 
         Project project = projectOpt.get();
         String email = waitListRequest.email();
-        boolean alreadyExists = project.getEmailList().stream()
-                .anyMatch(entry -> entry.getEmail().equalsIgnoreCase(email));
 
-        if (alreadyExists) {
+        boolean wasAdded = project.addWaitListEntry(email);
+        if (!wasAdded) {
+            // Email already exists
             return WaitListResponseFactory.alreadyExists();
         }
 
-        WaitListEntry entry = new WaitListEntry(email, project);
-        waitListEntryRepository.save(entry);
-        emailService.sendWelcomeEmail(email);
+        projectRepository.save(project);
+
+        int waitlistSize = project.getWaitlistSize();
+        emailService.sendWelcomeEmail(project.getProjectName(), waitlistSize, email);
+
         return WaitListResponseFactory.success();
     }
 
@@ -69,8 +70,7 @@ public class WaitListServiceImpl implements WaitListService {
         }
 
         var project = projectRepository.findByProjectName(projectId);
-        return project.map(Project::getEmailList)
-                .map(ArrayList::new);
+        return project.map(Project::getEmailList).map(ArrayList::new);
     }
 
     @Override

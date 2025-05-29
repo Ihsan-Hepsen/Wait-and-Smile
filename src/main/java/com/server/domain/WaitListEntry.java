@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "waitlist_entries")
 public class WaitListEntry {
 
     @Id
@@ -23,17 +24,18 @@ public class WaitListEntry {
     @Column(nullable = false)
     private final LocalDateTime joinedAt;
 
-
     public WaitListEntry() {
         this.joinedAt = LocalDateTime.now();
     }
 
     public WaitListEntry(String email, Project project) {
         this.email = email;
-        this.project = project;
         this.joinedAt = LocalDateTime.now();
-    }
 
+        if (project != null) {
+            project.addWaitListEntry(this);
+        }
+    }
 
     public Long getId() {
         return id;
@@ -55,7 +57,8 @@ public class WaitListEntry {
         this.email = email;
     }
 
-    public void setProject(Project project) {
+    // NOTE: only to be called by Project.addWaitListEntry()
+    void setProject(Project project) {
         this.project = project;
     }
 
@@ -64,7 +67,7 @@ public class WaitListEntry {
         return "WaitListEntry{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
-                ", project=" + project.getId() +
+                ", project=" + (project != null ? project.getId() : "null") +
                 ", joinedAt=" + joinedAt +
                 '}';
     }
